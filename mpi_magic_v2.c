@@ -9,8 +9,17 @@
 
 int globalTotal = 0;
 
-/* generates permutations  */
-int **permutateRow()
+/*
+ * Remove index from array
+ */
+void removeIdx(int **array, int index)
+{
+	int i, a = 0;
+	int size = sizeof(array[0])/sizeof(int);
+	for(i = index; i < size; i++) {
+		array[0][i]
+	}
+}
 
 /*
  * A function to print out all the n choose k combinations of a list
@@ -176,13 +185,14 @@ int main(void)
 	MPI_Gather(&local_sum, 1, MPI_INT, local_sums, 1, MPI_INT, 0, MPI_COMM_WORLD);	
 	
 	if(my_rank == 0){
-	int b = 0;
-	for(b = 0; b < n; b++){
-		final_sum += local_sums[b];
+		int b = 0;
+		for(b = 0; b < n; b++){
+			final_sum += local_sums[b];
+		}
+		printf("Final sum = %d\n", final_sum);
 	}
 
 	printf("Final sum = %d\n", final_sum);
-	}
 
 	//Free memory and Finalize MPI
 	MPI_Finalize();
