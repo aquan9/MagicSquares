@@ -164,7 +164,20 @@ int main(void)
 	int final_sum = 0;
 	int *local_sums = malloc(sizeof(int) * n);
 	int local_sum = 0;
-	int a[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+
+
+
+	//Dynamically allocated Selection array
+	int *a = malloc(sizeof(int) * 16);
+	int b = 0;
+	for(b = 0; b < 16; b++){
+		a[b] = b + 1;
+	}
+
+	//Possible Combinations storage, Max possible at a time = 455, 15 choose 3 = 455
+	int **possibleCombinations = malloc(sizeof(int) * 455);
+	//Possible Permutation storage, Max possible at a time = 24, 4! = 24
+	int **possiblePermutations = malloc(sizeof(int) * 24);
 
 	recursiveMagicSquare(a, my_rank, NULL, NULL, NULL, NULL);
 
@@ -179,6 +192,11 @@ int main(void)
 		printf("Final sum = %d\n", final_sum);
 	}
 
+	printf("Final sum = %d\n", final_sum);
+
+	//Free memory and Finalize MPI
 	MPI_Finalize();
+	free(a);
+	free(local_sums);
 	return 0;
 }
