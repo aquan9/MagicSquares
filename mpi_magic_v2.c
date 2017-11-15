@@ -12,6 +12,44 @@ int globalTotal = 0;
 /* generates permutations  */
 int **permutateRow()
 
+/*
+ * A function to print out all the n choose k combinations of a list
+ * int *list, the list to grab elements from
+ * int choose, the number of elements to grab
+ * int size, the list size
+ */
+void combinations(int *list, int choose, int size)
+{
+	int i = choose - 1; // the index of the last element in the initial selection
+	int selections[choose];
+	int b; // variable to iterate over the selection updates
+
+	//Set the initial conditions for the selection array
+	int a;
+	for(a = 0; a <= choose; a++){
+		selections[a] = a;
+	}	
+	
+
+	printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
+	do {
+		while(selections[i] < (size - choose + i)){
+			//Do something with a combination
+			//printf("%d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]]);
+			//Update selections
+			selections[i] += 1;
+			for(b = i + 1; b <= choose - 1; b++){
+				selections[b] = selections[b - 1] + 1;
+			}
+			printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
+
+			i = choose - 1;
+		}
+		//Decrement i
+		i--;
+	} while(i >= 0);
+}
+
 void swap(int *x, int *y)
 {
 	if(x == y)
@@ -22,6 +60,10 @@ void swap(int *x, int *y)
 	*x = *x ^ *y;
 }
 
+/*
+ * Check if the given rows are a valid Magic Square
+ * int *rowN, the Nth row of the square
+ */
 bool isMagicSquare(int *row1, int *row2, int *row3, int *row4)
 {
 	int i;
@@ -47,11 +89,15 @@ bool isMagicSquare(int *row1, int *row2, int *row3, int *row4)
 	return true;
 }
 
-/* build rows, eliminate invalid rows, permutate, repeat */
+/* build rows, eliminate invalid rows, permutate, repeat
+ * int *array, the array of elements not yet choosen to be in a row
+ * int rank, the process rank
+ * int *rowN, the Nth row of the square
+ */
 int recursiveMagicSquare(int *array, int rank, int *row1, int *row2, int *row3, int *row4)
 {
 	if(row1 == NULL) {
-		//gen array of all 15choose3 plus the rank number
+		
 		//eliminate invalid rows
 		if(sumVector(row1, 0, 1) == MAGIC_SUM) {
 			//permuate here
