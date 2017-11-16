@@ -11,7 +11,8 @@
 #define MSUM 15
 
 
-/*Calculate the factorial of a number recursively
+/*
+ * Calculate the factorial of a number recursively
  * int n, the number to find the factorial of
  * return, the factorial
  */
@@ -34,6 +35,27 @@ int sumArray(int *array, int startIdx, int tosum)
 	int i, total = 0;
 	for(i = startIdx; i < (startIdx+tosum); i++) {total += array[i];}
 	return total;
+}
+
+/*
+ * Remove element from array
+ */
+void removeElement(int **array, int *size, int element)
+{
+	int i, found = 0;
+	for(i = 0; i < (*size-1); i++){
+		if(!found && (*array)[i] == element)
+			found = 1;
+		if(found)
+			(*array)[i] = (*array)[i+1];
+	}
+	if(!found)
+		if((*array)[*size-1] == element)
+			found = 1;
+	if(found) {
+		*array = realloc(*array, *size-1);
+		*size -= 1;
+	}
 }
 
 /*
@@ -201,18 +223,18 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
 				int **possiblePermutations = (int **) calloc(num_perm, sizeof(int *));
-				for(i = 0; i < num_perm; i++){
-					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
+				for(k = 0; k < num_perm; k++){
+					possiblePermutations[k] = (int *) calloc(MSIZE, sizeof(int));
 				}
 				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
-				for(k = 0; k < num_perm; k++){
-					printArray(possiblePermutations[k], MSIZE);
-				}
+				//for(k = 0; k < num_perm; k++){
+				//	printArray(possiblePermutations[k], MSIZE);
+				//}
 				for(k = 0; k < num_perm; k++){
 					recursiveMagicSquare(array, 0, possiblePermutations[k]);
 				}
-				for(i = 0; i < num_perm; i++) {
-					free(possiblePermutations[i]);
+				for(k = 0; k < num_perm; k++) {
+					free(possiblePermutations[k]);
 				}
 				free(possiblePermutations);
 			}
@@ -221,12 +243,11 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
-
-
 		return 0;
 	}	
 	//ROW 2 in unpopulated
 	if(square != NULL && square[MNUM] == 0) {
+	
 	}
 	return 0;
 	//if(row3 == NULL) {
