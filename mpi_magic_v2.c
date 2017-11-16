@@ -88,9 +88,6 @@ void combinations(int *list, int choose, int size, int **storage)
 
 }
 
-
-
-
 void swap(int *x, int *y)
 {
 	if(x == y)
@@ -180,7 +177,6 @@ int recursiveMagicSquare(int *array, int rank, int *row1, int *row2, int *row3, 
 
 int main(void)
 {
-	
 	//Initialize MPI and get MPI world information
 	int comm_sz; /* number of processes */
 	int my_rank; /* my process rank */

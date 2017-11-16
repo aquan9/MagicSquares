@@ -50,21 +50,17 @@ int sumArray(int *array, int startIdx, int tosum)
 /*
  * Remove element from array
  */
-void removeElement(int **array, int *size, int element)
+void removeElements(int *array, int size, int *elements, int *new_array)
 {
-	int i, found = 0;
-	for(i = 0; i < (*size-1); i++){
-		if(!found && (*array)[i] == element)
-			found = 1;
-		if(found)
-			(*array)[i] = (*array)[i+1];
-	}
-	if(!found)
-		if((*array)[*size-1] == element)
-			found = 1;
-	if(found) {
-		*array = realloc(*array, *size-1);
-		*size -= 1;
+	int i,j,k = 0,f;
+	for(i = 0; i < size; i++) {
+		f = 1;
+		for(j = 0; j < MSIZE; j++) {
+			if(array[i] == elements[j])
+				f = 0;
+		}
+		if(f)
+			new_array[k++] = array[i];
 	}
 }
 
@@ -216,7 +212,7 @@ void permutations(int *comb, int size, int offend, int **storage)
  * int rank, the process rank
  * int *square, the square so far
  */
-int recursiveMagicSquare(int *array, int rank, int *square)
+int recursiveMagicSquare(int *array, int size, int rank, int *square)
 {
 	int i,j,k;
 	//ROW 1 is unpopulated
@@ -241,7 +237,7 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					//recursiveMagicSquare(array, 0, possiblePermutations[k]);
+					recursiveMagicSquare(array, size, 0, possiblePermutations[k]);
 				}
 				for(k = 0; k < num_perm; k++) {
 					free(possiblePermutations[k]);
@@ -257,9 +253,14 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 	}	
 	//ROW 2 in unpopulated
 	if(square != NULL && square[MNUM] == 0) {
+		int *new_array = (int *) malloc(sizeof(int) * (MSIZE-MNUM));
+		removeElements(array, size, square, new_array);
+		//printArray(square, MSIZE);
+		//printArray(new_array, (MSIZE-MNUM));
+
 		int num_perm = factorial(MNUM); //The number of permutations for 1 row
 		//The number of combinations for the current row. 
-		int num_comb = factorial(MSIZE) / (num_perm * factorial(MSIZE - MNUM));
+		int num_comb = nchoosek(MSIZE-MNUM, MNUM);
 		int **possibleCombinations = (int **) calloc(num_comb, sizeof(int *));
 		for(i = 0; i < num_comb; i++){
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
@@ -277,7 +278,7 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 					printArray(possiblePermutations[k], MSIZE);
 				}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(array, 0, possiblePermutations[k]);
+					//recursiveMagicSquare(array, 0, possiblePermutations[k]);
 				}
 				for(i = 0; i < num_perm; i++) {
 					free(possiblePermutations[i]);
@@ -324,7 +325,7 @@ int main(void)
 
 	for(i = 1; i <= MSIZE; i++) {list[i-1] = i;}
 
-	i = recursiveMagicSquare(list, 0, NULL);
+	i = recursiveMagicSquare(list, MSIZE, 0, NULL);
 	//printf("i = %d\n", i);
 
 	free(list);
