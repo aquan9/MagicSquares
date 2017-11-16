@@ -77,6 +77,7 @@ bool isMagicSquare(int *row1, int *row2, int *row3, int *row4)
 {
 	int i;
 	// Horizontal checks unsued because rows will always add to magic sum
+
 	// horizontal checks
 	//for(i = 0; i < n; i++) {
 	//	if (sumVector(square, i*n, 1) != MAGIC_SUM)

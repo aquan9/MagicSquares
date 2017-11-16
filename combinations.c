@@ -35,11 +35,11 @@ void combinations(int *list, int choose, int size, int **storage)
 	//Calculate the offset, for where to store the elements
 	//This will use the first element in storage for this purpose 
 	int offset = 0;
-	for(a = 0; a < 16; a++){
+	for(a = 0; a < 9; a++){
 		if(storage[0][a] != 0)
 			offset = a + 1;	
 	}
-	if(offset == 16){ //This means the array we were given is already full
+	if(offset == 9){ //This means the array we were given is already full
 		printf("The storage arrays are already full!");
 		return; 
 	}
@@ -80,19 +80,19 @@ int main(void)
 	int i;
         //Allocate enough space for a 2D array of possible combinations
 	//This will also clear that memory	
-	int **possibleCombinations = (int **) calloc(1820, sizeof(int *));
-	for(i = 0; i < 1820; i++){
-		possibleCombinations[i] = (int *) calloc(16, sizeof(int));
+	int **possibleCombinations = (int **) calloc(84, sizeof(int *));
+	for(i = 0; i < 84; i++){
+		possibleCombinations[i] = (int *) calloc(9, sizeof(int));
 	}
 	
-	int *list = malloc(sizeof(int) * 16);
-	for(i = 1; i <= 16; i++){
+	int *list = malloc(sizeof(int) * 9);
+	for(i = 1; i <= 9; i++){
 		list[i-1] = i;
 	}
 
 	//Check to make sure the combinations function will offset its values
 	//possibleCombinations[0][0] = 58;
-	combinations(list, 4, 16, possibleCombinations);
+	combinations(list, 3, 9, possibleCombinations);
 
 	
 	
@@ -100,8 +100,8 @@ int main(void)
 
 	printf("the possible combinations\n");
 	int b = 0;
-	while(b < 1820){
-		for(i = 0; i < 16; i++){
+	while(b < 84){
+		for(i = 0; i < 9; i++){
 			printf("%d,", possibleCombinations[b][i]);
 		}
 		printf("\n");
