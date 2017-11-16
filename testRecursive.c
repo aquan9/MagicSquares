@@ -42,7 +42,7 @@ void combinations(int *list, int size, int choose, int **storage)
 	int a;
 	for(a = 0; a <= choose; a++){
 		selections[a] = a;
-	}	
+	}
 	
 	//Store once before doing all the others for fence post error
 	//printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
@@ -169,12 +169,12 @@ void permutations(int *comb, int size, int offend, int **storage)
 /* build rows, eliminate invalid rows, permutate, repeat
  * int *array, the array of elements not yet choosen to be in a row
  * int rank, the process rank
- * int *rowN, the Nth row of the square
+ * int *square, the square so far
  */
-int recursiveMagicSquare(int *array, int rank, int *row1, int *row2, int *row3, int *row4)
+int recursiveMagicSquare(int *array, int rank, int *square)
 {
 	int i,j,k;
-	if(row1 == NULL) {
+	if(square == NULL) {
 		int **possibleCombinations = (int **) calloc(84, sizeof(int *));
 		for(i = 0; i < 84; i++){
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
@@ -189,21 +189,44 @@ int recursiveMagicSquare(int *array, int rank, int *row1, int *row2, int *row3, 
 				}
 				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
 				for(k = 0; k < 6; k++){
+					recursiveMagicSquare(array, 0, possiblePermutations[k]);
+				}
+				for(i = 0; i < 6; i++) {
+					free(possiblePermutations[i]);
+				}
+				free(possiblePermutations);
+			}
+		}
+		for(i = 0; i < 84; i++) {
+			free(possibleCombinations[i]);
+		}
+		free(possibleCombinations);
+		return 0;
+	}	
+	if(square != NULL && square[MNUM] == 0) {
+		int **possibleCombinations = (int **) calloc(20, sizeof(int *));
+		for(i = 0; i < 20; i++){
+			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
+		}
+		printf("yo\n");
+		combinations(array, MSIZE, 3, possibleCombinations);
+		printf("oy\n");
+		for(j = 0; j < 20; j++){
+			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
+				//printArray(possibleCombinations[j], MSIZE);
+				int **possiblePermutations = (int **) calloc(6, sizeof(int *));
+				for(i = 0; i < 6; i++){
+					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
+				}
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+				for(k = 0; k < 6; k++){
 					printArray(possiblePermutations[k], MSIZE);
+					//printArray(possiblePermutations[k], MSIZE);
 				}
 			}
 		}
-	}	
+	}
 	return 0;
-	//if(row2 == NULL) {
-	//	//gen array of all 12choose4
-	//	//eliminate invalid rows
-	//	if(sumArray(row2, MNUM) == MSUM) {
-	//		//permuate here
-	//		//call recursiveMagicSquare with each permuation of each 12choose4
-	//	}
-	//	return 0;
-	//}
 	//if(row3 == NULL) {
 	//	//gen array of all 8choose4 plus the rank number
 	//	//eliminate invalid rows
@@ -233,8 +256,8 @@ int main(void)
 
 	for(i = 1; i <= MSIZE; i++) {list[i-1] = i;}
 
-	i = recursiveMagicSquare(list, 0, NULL, NULL, NULL, NULL);
-	printf("i = %d\n", i);
+	i = recursiveMagicSquare(list, 0, NULL);
+	//printf("i = %d\n", i);
 
 	free(list);
 	return 0;
