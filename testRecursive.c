@@ -10,6 +10,19 @@
 #define MSIZE 9
 #define MSUM 15
 
+
+/*Calculate the factorial of a number recursively
+ * int n, the number to find the factorial of
+ * return, the factorial
+ */
+int factorial(int n)
+{
+	if(n == 1)
+		return n;
+	else
+		return n * factorial(n - 1);
+}
+
 /*
  * Sums the elements of an array
  * int *array, array to be summed
@@ -174,57 +187,46 @@ void permutations(int *comb, int size, int offend, int **storage)
 int recursiveMagicSquare(int *array, int rank, int *square)
 {
 	int i,j,k;
+	//ROW 1 is unpopulated
 	if(square == NULL) {
-		int **possibleCombinations = (int **) calloc(84, sizeof(int *));
-		for(i = 0; i < 84; i++){
+		int num_perm = factorial(MNUM); //The number of permutations for 1 row
+		//The number of combinations for the current row. 
+		int num_comb = factorial(MSIZE) / (num_perm * factorial(MSIZE - MNUM));
+		int **possibleCombinations = (int **) calloc(num_comb, sizeof(int *));
+		for(i = 0; i < num_comb; i++){
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
 		}
-		combinations(array, MSIZE, 3, possibleCombinations);
-		for(j = 0; j < 84; j++){
+		combinations(array, MSIZE, MNUM, possibleCombinations);
+		for(j = 0; j < num_comb; j++){
 			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
-				int **possiblePermutations = (int **) calloc(6, sizeof(int *));
-				for(i = 0; i < 6; i++){
+				int **possiblePermutations = (int **) calloc(num_perm, sizeof(int *));
+				for(i = 0; i < num_perm; i++){
 					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
 				}
 				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
-				for(k = 0; k < 6; k++){
+				for(k = 0; k < num_perm; k++){
+					printArray(possiblePermutations[k], MSIZE);
+				}
+				for(k = 0; k < num_perm; k++){
 					recursiveMagicSquare(array, 0, possiblePermutations[k]);
 				}
-				for(i = 0; i < 6; i++) {
+				for(i = 0; i < num_perm; i++) {
 					free(possiblePermutations[i]);
 				}
 				free(possiblePermutations);
 			}
 		}
-		for(i = 0; i < 84; i++) {
+		for(i = 0; i < num_comb; i++) {
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
+
+
 		return 0;
 	}	
+	//ROW 2 in unpopulated
 	if(square != NULL && square[MNUM] == 0) {
-		int **possibleCombinations = (int **) calloc(20, sizeof(int *));
-		for(i = 0; i < 20; i++){
-			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
-		}
-		printf("yo\n");
-		combinations(array, MSIZE, 3, possibleCombinations);
-		printf("oy\n");
-		for(j = 0; j < 20; j++){
-			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
-				//printArray(possibleCombinations[j], MSIZE);
-				int **possiblePermutations = (int **) calloc(6, sizeof(int *));
-				for(i = 0; i < 6; i++){
-					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
-				}
-				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
-				for(k = 0; k < 6; k++){
-					printArray(possiblePermutations[k], MSIZE);
-					//printArray(possiblePermutations[k], MSIZE);
-				}
-			}
-		}
 	}
 	return 0;
 	//if(row3 == NULL) {
