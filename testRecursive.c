@@ -11,6 +11,7 @@
 #define MSUM 15
 
 
+
 /*Calculate the factorial of a number recursively
  * int n, the number to find the factorial of
  * return, the factorial
@@ -21,6 +22,16 @@ int factorial(int n)
 		return n;
 	else
 		return n * factorial(n - 1);
+}
+
+/*Calculate the number of n choose k values
+ * int n, the number to choose from
+ * int k, the quantity to choose from
+ * return, the n choose k values
+ */
+int nchoosek(int n, int k)
+{
+	return factorial(n) / (k * factorial(n - k));
 }
 
 /*
@@ -191,6 +202,44 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 	if(square == NULL) {
 		int num_perm = factorial(MNUM); //The number of permutations for 1 row
 		//The number of combinations for the current row. 
+		int num_comb = nchoosek(MSIZE, MNUM);
+		int **possibleCombinations = (int **) calloc(num_comb, sizeof(int *));
+		for(i = 0; i < num_comb; i++){
+			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
+		}
+		combinations(array, MSIZE, MNUM, possibleCombinations);
+		for(j = 0; j < num_comb; j++){
+			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
+				//printArray(possibleCombinations[j], MSIZE);
+				int **possiblePermutations = (int **) calloc(num_perm, sizeof(int *));
+				for(i = 0; i < num_perm; i++){
+					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
+				}
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+				for(k = 0; k < num_perm; k++){
+					printArray(possiblePermutations[k], MSIZE);
+				}
+				for(k = 0; k < num_perm; k++){
+					//recursiveMagicSquare(array, 0, possiblePermutations[k]);
+				}
+				for(i = 0; i < num_perm; i++) {
+					free(possiblePermutations[i]);
+				}
+				free(possiblePermutations);
+			}
+		}
+		for(i = 0; i < num_comb; i++) {
+			free(possibleCombinations[i]);
+		}
+		free(possibleCombinations);
+
+
+		return 0;
+	}	
+	//ROW 2 in unpopulated
+	if(square != NULL && square[MNUM] == 0) {
+		int num_perm = factorial(MNUM); //The number of permutations for 1 row
+		//The number of combinations for the current row. 
 		int num_comb = factorial(MSIZE) / (num_perm * factorial(MSIZE - MNUM));
 		int **possibleCombinations = (int **) calloc(num_comb, sizeof(int *));
 		for(i = 0; i < num_comb; i++){
@@ -224,9 +273,6 @@ int recursiveMagicSquare(int *array, int rank, int *square)
 
 
 		return 0;
-	}	
-	//ROW 2 in unpopulated
-	if(square != NULL && square[MNUM] == 0) {
 	}
 	return 0;
 	//if(row3 == NULL) {
