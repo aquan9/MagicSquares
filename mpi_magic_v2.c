@@ -21,26 +21,50 @@ void removeIdx(int **array, int index)
 	}
 }
 
+
+
 /*
  * A function to print out all the n choose k combinations of a list
  * int *list, the list to grab elements from
  * int choose, the number of elements to grab
  * int size, the list size
+ * int **storage, a place to store all the combinations
+ *
+ * This function will offset the store of its values based on storage[0]. And append using this offset
  */
-void combinations(int *list, int choose, int size)
+void combinations(int *list, int choose, int size, int **storage)
 {
 	int i = choose - 1; // the index of the last element in the initial selection
 	int selections[choose];
 	int b; // variable to iterate over the selection updates
-
+	int store_pos = 0;
 	//Set the initial conditions for the selection array
 	int a;
 	for(a = 0; a <= choose; a++){
 		selections[a] = a;
 	}	
 	
+	//Store once before doing all the others for fence post error
+	//printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
 
-	printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
+
+	//Calculate the offset, for where to store the elements
+	//This will use the first element in storage for this purpose 
+	int offset = 0;
+	for(a = 0; a < 16; a++){
+		if(storage[0][a] != 0)
+			offset = a + 1;	
+	}
+	if(offset == 16){ //This means the array we were given is already full
+		printf("The storage arrays are already full!");
+		return; 
+	}
+	for(a = 0; a < choose; a++){
+		storage[store_pos][a + offset] = list[selections[a]];
+	}
+	store_pos++;
+
+
 	do {
 		while(selections[i] < (size - choose + i)){
 			//Do something with a combination
@@ -50,14 +74,22 @@ void combinations(int *list, int choose, int size)
 			for(b = i + 1; b <= choose - 1; b++){
 				selections[b] = selections[b - 1] + 1;
 			}
-			printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
+			//printf("%d, %d, %d, %d\n", list[selections[0]], list[selections[1]], list[selections[2]], list[selections[3]]);
+			for(a = 0; a < choose; a++){
+				storage[store_pos][a + offset] = list[selections[a]];
+			}
+			store_pos++;
 
 			i = choose - 1;
 		}
 		//Decrement i
 		i--;
 	} while(i >= 0);
+
 }
+
+
+
 
 void swap(int *x, int *y)
 {
@@ -175,9 +207,15 @@ int main(void)
 	}
 
 	//Possible Combinations storage, Max possible at a time = 455, 15 choose 3 = 455
-	int **possibleCombinations = malloc(sizeof(int) * 455);
+	int **possibleCombinations = (int **) calloc(1820, sizeof(int *));
+	for(i = 0; i < 1820; i++){
+		possibleCombinations[i] = (int *) calloc(16, sizeof(int));
+	}
 	//Possible Permutation storage, Max possible at a time = 24, 4! = 24
-	int **possiblePermutations = malloc(sizeof(int) * 24);
+	int **possiblePermutations = (int **) calloc(24, sizeof(int *));
+	for(i = 0; i < 1820; i++){
+		possiblePermutations[i] = (int *) calloc(16, sizeof(int));
+	}
 
 	recursiveMagicSquare(a, my_rank, NULL, NULL, NULL, NULL);
 
@@ -196,6 +234,7 @@ int main(void)
 
 	//Free memory and Finalize MPI
 	MPI_Finalize();
+	//TODO Figure out how to properly free possibleCombinations and possiblePermutations Storage
 	free(a);
 	free(local_sums);
 	return 0;
