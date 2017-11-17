@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MNUM 3
-#define MSIZE 9
-#define MSUM 15
+#define MNUM 4
+#define MSIZE 16
+#define MSUM 34
 
 
 
@@ -16,7 +16,7 @@
  * int n, the number to find the factorial of
  * return, the factorial
  */
-int factorial(int n)
+long factorial(long n)
 {
 	if(n == 1)
 		return n;
@@ -31,7 +31,7 @@ int factorial(int n)
  * int k, the quantity to choose from
  * return, the n choose k values
  */
-int nchoosek(int n, int k)
+long nchoosek(long n, long k)
 {
 	return factorial(n) / (factorial(k) * factorial(n - k));
 }
@@ -66,17 +66,32 @@ int isMagicSquare(int *square)
 
 	//3x3 tests
 	// vertical checks 
+	//for(i = 0; i < MNUM; i++) {
+		//printf("Row %d sum = %d\n", i, square[i] + square[i + MNUM] + square[i + (MNUM * 2)]);
+	//	if(square[i] + square[i + MNUM] + square[i + (MNUM * 2)] != MSUM){
+	//		return 0;
+	//	}
+	//}
+
+	// diagonal checks
+	//if (square[0] + square[1 + (MNUM)] + square[2 + (MNUM * 2)] != MSUM)
+	//	return 0;
+	//if (square[0 + (MNUM * 2)] + square[1 + (MNUM)] + square[2] != MSUM)
+	//	return 0;
+
+	//4x4 tests
+	// vertical checks 
 	for(i = 0; i < MNUM; i++) {
 		//printf("Row %d sum = %d\n", i, square[i] + square[i + MNUM] + square[i + (MNUM * 2)]);
-		if(square[i] + square[i + MNUM] + square[i + (MNUM * 2)] != MSUM){
+		if(square[i] + square[i + MNUM] + square[i + (MNUM * 2)] + square[i + (MNUM * 3)] != MSUM){
 			return 0;
 		}
 	}
 
 	// diagonal checks
-	if (square[0] + square[1 + (MNUM)] + square[2 + (MNUM * 2)] != MSUM)
+	if (square[0] + square[1 + (MNUM)] + square[2 + (MNUM * 2)] + square[3 + (MNUM * 3)] != MSUM)
 		return 0;
-	if (square[0 + (MNUM * 2)] + square[1 + (MNUM)] + square[2] != MSUM)
+	if (square[0 + (MNUM * 3)] + square[1 + (MNUM * 2)] + square[2 + (MNUM)] + square[3] != MSUM)
 		return 0;
 
 	return 1;
@@ -200,6 +215,7 @@ void permutations(int *comb, int size, int offend, int **storage)
 {
 	int a[offend];
 	int *c = (int *) calloc(offend, sizeof(int));
+	//int c[offend];
 	int offset = (size-1);
 	int storIdx = 0;
 	int i;
@@ -250,6 +266,9 @@ void permutations(int *comb, int size, int offend, int **storage)
 int recursiveMagicSquare(int *array, int size, int rank, int *square)
 {
 	int i,j,k;
+
+	//The total magic squares found
+	int sum = 0; 
 	//ROW 1 is unpopulated
 	if(square == NULL) {
 		int num_perm = factorial(MNUM); //The number of permutations for 1 row
@@ -360,15 +379,15 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					//recursiveMagicSquare(array, 0, possiblePermutations[k]);
+					recursiveMagicSquare(new_array, size, 0, possiblePermutations[k]);
 				}
 
 				//Check to see if its a 3x3 magic square
-				for(k = 0; k < num_perm; k++){
-					if(isMagicSquare(possiblePermutations[k])){
-						printArray(possiblePermutations[k], MSIZE);	
-					}
-				}
+				//for(k = 0; k < num_perm; k++){
+				//	if(isMagicSquare(possiblePermutations[k])){
+				//		printArray(possiblePermutations[k], MSIZE);	
+				//	}
+				//}
 
 
 				for(i = 0; i < num_perm; i++) {
@@ -386,16 +405,63 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 		return 0;
 	
 	}
-	return 0;
-	//if(row4 == NULL) {
-	//	//see if last 4 numbers add to magic sum
-	//	if(sumArray(row4, MNUM) == MSUM) {
-	//		//permuate here
-	//		//call recursiveMagicSquare with each permuation of the last 4
-	//	}
-	//	return;
-	//}
+	//Row 4 unpopulated
+	if(square != NULL && square[MNUM * 3] == 0) {
+		int *new_array = (int *) malloc(sizeof(int) * (MSIZE-(MNUM * 3)));
+		removeElements(array, size, square, new_array);
+		//printArray(square, MSIZE);
+		//printArray(new_array, (MSIZE-MNUM));
 
+		int num_perm = factorial(MNUM); //The number of permutations for 1 row
+		//The number of combinations for the current row. 
+		int num_comb = nchoosek(MSIZE-(MNUM * 3), MNUM);
+		int **possibleCombinations = (int **) calloc(num_comb, sizeof(int *));
+		for(i = 0; i < num_comb; i++){
+			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
+			memcpy(possibleCombinations[i], square, (MSIZE*sizeof(int)));
+		}
+		combinations(new_array, MSIZE-(MNUM * 3), MNUM, possibleCombinations);
+		for(j = 0; j < num_comb; j++){
+			if(sumArray(possibleCombinations[j], (MNUM * 3), MNUM) == MSUM) {
+				//printArray(possibleCombinations[j], MSIZE);
+				//printArray(possibleCombinations[j], MSIZE);
+				int **possiblePermutations = (int **) calloc(num_perm, sizeof(int *));
+				for(i = 0; i < num_perm; i++){
+					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
+				}
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+				//for(k = 0; k < num_perm; k++){
+				//	printArray(possiblePermutations[k], MSIZE);
+				//}
+				for(k = 0; k < num_perm; k++){
+					//recursiveMagicSquare(array, 0, possiblePermutations[k]);
+				}
+
+				//Check to see if its a 4x4 magic square
+				for(k = 0; k < num_perm; k++){
+					if(isMagicSquare(possiblePermutations[k])){
+						sum += 1;
+						printArray(possiblePermutations[k], MSIZE);	
+					}
+				}
+
+
+				for(i = 0; i < num_perm; i++) {
+					free(possiblePermutations[i]);
+				}
+				free(possiblePermutations);
+			}
+		}
+		for(i = 0; i < num_comb; i++) {
+			free(possibleCombinations[i]);
+		}
+		free(possibleCombinations);
+
+		
+		return sum;
+	
+	}
+	return 0;
 	//if(isMagicSquare(row1, row2, row3, row4))
 	//	globalTotal += 1;
 }
@@ -405,10 +471,12 @@ int main(void)
 	int i;
 	int *list = malloc(sizeof(int) * MSIZE);
 
+	int sum = 0;
+
 	for(i = 1; i <= MSIZE; i++) {list[i-1] = i;}
 	printf("Magic Squares\n");
-	i = recursiveMagicSquare(list, MSIZE, 0, NULL);
-	//printf("i = %d\n", i);
+	sum = recursiveMagicSquare(list, MSIZE, 0, NULL);
+	printf("sum = %d\n", sum);
 
 	free(list);
 	return 0;
