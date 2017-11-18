@@ -291,7 +291,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(array, size, 0, possiblePermutations[k]);
+					recursiveMagicSquare(array, size-MNUM, 0, possiblePermutations[k]);
 				}
 				for(k = 0; k < num_perm; k++) {
 					free(possiblePermutations[k]);
@@ -334,7 +334,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(new_array, size, 0, possiblePermutations[k]);
+					recursiveMagicSquare(new_array, size-MSIZE, 0, possiblePermutations[k]);
 				}
 				for(i = 0; i < num_perm; i++) {
 					free(possiblePermutations[i]);
@@ -381,7 +381,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(new_array, size, 0, possiblePermutations[k]);
+					recursiveMagicSquare(new_array, size-MSIZE, 0, possiblePermutations[k]);
 				}
 
 				//Check to see if its a 3x3 magic square
