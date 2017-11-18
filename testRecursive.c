@@ -10,8 +10,6 @@
 #define MSIZE 16
 #define MSUM 34
 
-
-
 /*Calculate the factorial of a number recursively
  * int n, the number to find the factorial of
  * return, the factorial
@@ -211,7 +209,7 @@ void printArray(int *array, int size)
  * int offend, number of varibles off the end of list to permutate
  * int **storage, a place to store all the permutations
  */
-void permutations(int *comb, int size, int offend, int **storage)
+void permutations(int *comb, int size, int offend, int **storage, int storeSize)
 {
 	int a[offend];
 	int *c = (int *) calloc(offend, sizeof(int));
@@ -232,11 +230,12 @@ void permutations(int *comb, int size, int offend, int **storage)
 		a[i] = comb[offset+i];
 
 	// setup storage
-	while(storage[storIdx] != NULL)
-		memcpy(storage[storIdx++], comb, (size*sizeof(int)));
-	storIdx = 1;
+	for(i = 0; i < storeSize; i++) {
+		memcpy(storage[i], comb, (size*sizeof(int)));
+        }
 		
 	// permutation loop
+        storIdx = 1;
 	i = 0;	
 	while(i < offend){
 		if(c[i] < i){
@@ -286,7 +285,8 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				for(k = 0; k < num_perm; k++){
 					possiblePermutations[k] = (int *) calloc(MSIZE, sizeof(int));
 				}
-				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+                                //printf("1\n");
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations, num_perm);
 				//for(k = 0; k < num_perm; k++){
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
@@ -328,7 +328,8 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				for(i = 0; i < num_perm; i++){
 					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
 				}
-				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+                                //printf("2\n");
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations, num_perm);
 				//for(k = 0; k < num_perm; k++){
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
@@ -345,7 +346,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
-
+                free(new_array);
 
 		return 0;
 	
@@ -374,7 +375,8 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				for(i = 0; i < num_perm; i++){
 					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
 				}
-				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations, num_perm);
 				//for(k = 0; k < num_perm; k++){
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
@@ -400,7 +402,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
-
+                free(new_array);
 
 		return 0;
 	
@@ -429,7 +431,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				for(i = 0; i < num_perm; i++){
 					possiblePermutations[i] = (int *) calloc(MSIZE, sizeof(int));
 				}
-				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations);
+				permutations(possibleCombinations[j], MSIZE, MNUM, possiblePermutations, num_perm);
 				//for(k = 0; k < num_perm; k++){
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
@@ -456,7 +458,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
-
+                free(new_array);
 		
 		return sum;
 	
