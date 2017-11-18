@@ -277,7 +277,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 		for(i = 0; i < num_comb; i++){
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
 		}
-		combinations(array, MSIZE, MNUM, possibleCombinations);
+		combinations(array, size, MNUM, possibleCombinations);
 		for(j = 0; j < num_comb; j++){
 			if(sumArray(possibleCombinations[j], 0, MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
@@ -291,7 +291,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(array, size-MNUM, 0, possiblePermutations[k]);
+					sum += recursiveMagicSquare(array, size, 0, possiblePermutations[k]);
 				}
 				for(k = 0; k < num_perm; k++) {
 					free(possiblePermutations[k]);
@@ -303,7 +303,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			free(possibleCombinations[i]);
 		}
 		free(possibleCombinations);
-		return 0;
+		return sum;
 	}	
 	//ROW 2 is unpopulated
 	if(square != NULL && square[MNUM] == 0) {
@@ -320,7 +320,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
 			memcpy(possibleCombinations[i], square, (MSIZE*sizeof(int)));
 		}
-		combinations(new_array, MSIZE-MNUM, MNUM, possibleCombinations);
+		combinations(new_array, size-MNUM, MNUM, possibleCombinations);
 		for(j = 0; j < num_comb; j++){
 			if(sumArray(possibleCombinations[j], MNUM, MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
@@ -334,7 +334,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(new_array, size-MSIZE, 0, possiblePermutations[k]);
+					sum += recursiveMagicSquare(new_array, size-MNUM, 0, possiblePermutations[k]);
 				}
 				for(i = 0; i < num_perm; i++) {
 					free(possiblePermutations[i]);
@@ -348,8 +348,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 		free(possibleCombinations);
                 free(new_array);
 
-		return 0;
-	
+		return sum;
 	}
 	//ROW 3 is unpopulated
 	if(square != NULL && square[MNUM * 2] == 0) {
@@ -366,7 +365,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
 			memcpy(possibleCombinations[i], square, (MSIZE*sizeof(int)));
 		}
-		combinations(new_array, MSIZE-(MNUM * 2), MNUM, possibleCombinations);
+		combinations(new_array, size-MNUM, MNUM, possibleCombinations);
 		for(j = 0; j < num_comb; j++){
 			if(sumArray(possibleCombinations[j], (MNUM * 2), MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
@@ -381,7 +380,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 				//	printArray(possiblePermutations[k], MSIZE);
 				//}
 				for(k = 0; k < num_perm; k++){
-					recursiveMagicSquare(new_array, size-MSIZE, 0, possiblePermutations[k]);
+					sum += recursiveMagicSquare(new_array, size-MNUM, 0, possiblePermutations[k]);
 				}
 
 				//Check to see if its a 3x3 magic square
@@ -404,8 +403,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 		free(possibleCombinations);
                 free(new_array);
 
-		return 0;
-	
+		return sum;
 	}
 	//Row 4 unpopulated
 	if(square != NULL && square[MNUM * 3] == 0) {
@@ -422,7 +420,7 @@ int recursiveMagicSquare(int *array, int size, int rank, int *square)
 			possibleCombinations[i] = (int *) calloc(MSIZE, sizeof(int));
 			memcpy(possibleCombinations[i], square, (MSIZE*sizeof(int)));
 		}
-		combinations(new_array, MSIZE-(MNUM * 3), MNUM, possibleCombinations);
+		combinations(new_array, size-MNUM, MNUM, possibleCombinations);
 		for(j = 0; j < num_comb; j++){
 			if(sumArray(possibleCombinations[j], (MNUM * 3), MNUM) == MSUM) {
 				//printArray(possibleCombinations[j], MSIZE);
